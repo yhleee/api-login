@@ -18,3 +18,69 @@
     font-size: 40px;
     font-weight: bold;
 }
+
+.search .condition {
+    font-size: 50px;
+}
+.inactive{
+    background: rgb(145, 155, 126);
+    margin-left: 15px;
+    margin-right: 15px;
+    height: auto;
+    width: auto;
+}
+.active{
+    background: rgb(170, 255, 0);
+    margin-left: 15px;
+    margin-right: 15px;
+    height: auto;
+    width: auto;
+}
+.checkable-tag{
+    margin-top: 10px;
+    margin-left: 15px;
+    width: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.footer-wrap {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    height: 8%;
+    line-height:350%;
+    font-size: 30px;
+    background: #c2dd8d;
+    text-align: center;
+}
+
+.footer-wrap .search-button {
+    width: 100%;
+}
+
+.serach-no-result-wrap {
+    width: 100%;
+}
+
+.serach-no-result-wrap .stop-text {
+    display: block;
+    text-align: center;
+    font-size: 50px;
+    margin-top: 20px;
+}
+
+.serach-no-result-wrap .stop-button {
+    display: block;
+    height: 80px;
+    text-align: center;
+    font-size: 50px;
+    background-color: #c2dd8d;
+    margin-left: 150px;
+    margin-right:150px;
+}
