@@ -6,7 +6,7 @@ import { DynamicCx } from 'common/types'
 import { styling } from 'common/utils'
 import * as s from './login.scss'
 import { match } from 'react-router'
-import { SearchConditionParamsState } from './ducks/loginConditionParams'
+import { SearchConditionParamsState } from './ducks/searchConditionParams'
 
 interface OwnProps {
   cx?: DynamicCx

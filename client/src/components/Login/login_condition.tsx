@@ -100,6 +100,7 @@ class SearchCondition extends React.Component<Props, OwnState> {
         <div>
           {/* 검색어 입력 영역 */}
           <Input
+            type="password"
             placeholder="Olive One Password"
             onChange={this.onChange}
             style={{
