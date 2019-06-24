@@ -21,6 +21,7 @@ function createLoadable(componentImport) {
 
 export const Example = createLoadable(() => import('./Example/Example'))
 export const Login = createLoadable(() => import('./Login/login'))
+export const LoginResult = createLoadable(() => import('./Login/login_result'))
 export const TestAxios = createLoadable(() => import('./test/naverSelectiveList'))
 export const Home = createLoadable(() => import('./Home/home'))
 export const Survey = createLoadable(() => import('./Survey/survey'))
@@ -51,7 +52,8 @@ const Routes = () => {
         <Route path="/app/example" component={Example} />
         <Route path="/app/test/axios" component={TestAxios} />
         <Route path="/app/home" component={Home} />
-        <Route path="/app/login" component={login} />
+        <Route path="/app/login" component={Login} />
+        <Route path="/app/loginresult" component={LoginResult} />
         <Route path="/app/survey" component={Survey} />
         <Route path="/app/ranking/products" component={RankingProductList} />
         <Route path="/app/ranking/search/:searchType/:brandName" component={RankingSearch} />
