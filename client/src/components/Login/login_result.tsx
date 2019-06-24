@@ -6,7 +6,7 @@ import { DynamicCx } from 'common/types'
 import { styling } from 'common/utils'
 import * as s from './login.scss'
 import { match } from 'react-router'
-import { SearchConditionParamsState } from './ducks/searchConditionParams'
+import { LoginConditionParamsState } from './ducks/loginConditionParams'
 
 interface OwnProps {
   cx?: DynamicCx
@@ -16,7 +16,7 @@ interface OwnProps {
 
 interface StateProps {
   layoutTitle: LayoutTitleState
-  searchConditionParams: SearchConditionParamsState
+  loginConditionParams: LoginConditionParamsState
 }
 
 interface DispatchProps {
@@ -45,7 +45,7 @@ class SearchResult extends React.Component<Props, OwnState> {
 export default connect<StateProps, DispatchProps, OwnProps>(
   (state: RootState) => ({
     layoutTitle: state.layoutTitle,
-    searchConditionParams: state.searchConditionParams,
+    loginConditionParams: state.loginConditionParams,
   }),
   {
     updateLayoutTile,

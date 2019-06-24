@@ -1,11 +1,13 @@
+import { SearchForm } from 'common/types/entities/search'
 import { LoginForm } from 'common/types/entities/login'
 
 export interface LoginConditionParamsState {
-  loginForm: LoginForm
+  //searchForm: SearchForm
+  searchForm: LoginForm
 }
 
 const initialState: LoginConditionParamsState = {
-  loginForm: {
+  searchForm: {
     id: '',
     pw: '',
   },
@@ -20,9 +22,9 @@ export const resetLoginConditionParams = () => {
   }
 }
 
-export const updateLoginConditionParams = (loginConditionParams: LoginConditionParamsState) => dispatch => {
+export const updateLoginConditionParams = (loginConditionParamsState: LoginConditionParamsState) => dispatch => {
   dispatch({
-    state: loginConditionParams,
+    state: loginConditionParamsState,
     type: UPDATE,
   })
 }

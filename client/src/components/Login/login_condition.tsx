@@ -13,10 +13,10 @@ import { CategoryFormResult } from '../../common/types/entities/search'
 import { getSearchBrandList } from '../../common/services/search'
 import { BrandParams } from '../../common/types/entities/brand'
 import {
-  resetSearchConditionParams,
-  SearchConditionParamsState,
-  updateSearchConditionParams,
-} from '../Search/ducks/searchConditionParams'
+  resetLoginConditionParams,
+  LoginConditionParamsState,
+  updateLoginConditionParams,
+} from './ducks/loginConditionParams'
 
 const SubMenu = Menu.SubMenu
 const { CheckableTag } = Tag
@@ -28,11 +28,11 @@ interface OwnProps {
 
 interface OwnState {}
 interface StateProps {
-  searchConditionParams: SearchConditionParamsState
+  loginConditionParams: LoginConditionParamsState
 }
 interface DispatchProps {
   //resetLoginConditionParams: typeof resetLoginConditionParams
-  updateSearchConditionParams: typeof updateSearchConditionParams
+  updateLoginConditionParams: typeof updateLoginConditionParams
 }
 
 // type Props = OwnProps & StateProps & DispatchProps
@@ -48,30 +48,33 @@ class SearchCondition extends React.Component<Props, OwnState> {
   }
 
   async componentDidMount() {
-    this.props.searchConditionParams.searchForm.searchword = ''
-    this.props.searchConditionParams.searchForm.searchword = ''
-    this.props.searchConditionParams.searchForm.categoryId = ''
-    this.props.searchConditionParams.searchForm.benefit = ''
-    this.props.searchConditionParams.searchForm.brand = ''
-    this.props.searchConditionParams.searchForm.startValue = 0
-    this.props.searchConditionParams.searchForm.endValue = 200000
+    this.props.loginConditionParams.searchForm.id = ''
+    this.props.loginConditionParams.searchForm.pw = ''
+    // this.props.searchConditionParams.searchForm.categoryId = ''
+    // this.props.searchConditionParams.searchForm.benefit = ''
+    // this.props.searchConditionParams.searchForm.brand = ''
+    // this.props.searchConditionParams.searchForm.startValue = 0
+    // this.props.searchConditionParams.searchForm.endValue = 200000
 
-    const brandList = await getSearchBrandList('00')
+    //const brandList = await getSearchBrandList('00')
 
     //this.setState({ ...this.state, brandList: this.state.brandList.concat(brandList) })
   }
 
-  onPriceRangeChange = ([startVal, endVal]) => {
-    this.props.searchConditionParams.searchForm.endValue = endVal
-    this.props.searchConditionParams.searchForm.startValue = startVal
-  }
+  // onPriceRangeChange = ([startVal, endVal]) => {
+  //   this.props.searchConditionParams.searchForm.endValue = endVal
+  //   this.props.searchConditionParams.searchForm.startValue = startVal
+  // }
 
-  onChange = e => {
-    this.props.searchConditionParams.searchForm.searchword = e.target.value
+  onChangeID = e => {
+    this.props.loginConditionParams.searchForm.id = e.target.value
+  }
+  onChangePW = e => {
+    this.props.loginConditionParams.searchForm.pw = e.target.value
   }
 
   goResultPage = () => {
-    const searchConditionParams = this.props.searchConditionParams
+    //const searchConditionParams = this.props.searchConditionParams
     //this.props.updateSearchConditionParams(searchConditionParams)
     this.props.history.push('/app/loginresult')
     // window.location.href = '/app/loginresult';
@@ -83,10 +86,10 @@ class SearchCondition extends React.Component<Props, OwnState> {
     return (
       <>
         <div>
-          {/* 검색어 입력 영역 */}
+          {/* ID 입력 */}
           <Input
             placeholder="Olive One ID"
-            onChange={this.onChange}
+            onChange={this.onChangeID}
             style={{
               paddingRight: 20,
               paddingLeft: 20,
@@ -102,7 +105,7 @@ class SearchCondition extends React.Component<Props, OwnState> {
           <Input
             type="password"
             placeholder="Olive One Password"
-            onChange={this.onChange}
+            onChange={this.onChangePW}
             style={{
               paddingRight: 20,
               paddingLeft: 20,
@@ -123,10 +126,10 @@ class SearchCondition extends React.Component<Props, OwnState> {
 
 export default connect<StateProps, DispatchProps, OwnProps>(
   (state: RootState) => ({
-    searchConditionParams: state.searchConditionParams,
+    loginConditionParams: state.loginConditionParams,
   }),
   {
     //resetSearchConditionParams,
-    updateSearchConditionParams,
+    updateLoginConditionParams,
   },
 )(styling(s)(SearchCondition))
