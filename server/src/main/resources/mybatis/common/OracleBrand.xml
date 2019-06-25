@@ -7,6 +7,7 @@
               ,brandName
               ,categoryLevel
               ,categoryId
+              ,'false' checked
           FROM (
             /* 전사 브랜드 조회 쿼리 */
             SELECT DISTINCT
@@ -27,7 +28,7 @@
                     )
              ORDER BY categoryLevel, CONVERT(brandName, 'ISO2022-KR')
           )
-          WHERE ROWNUM < 100
+          /*WHERE ROWNUM < 100*/
       ]]>
     </select>
 </mapper>

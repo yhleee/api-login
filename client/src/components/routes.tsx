@@ -4,7 +4,7 @@ import { Alert, Spin } from 'antd'
 import Loadable from 'react-loadable'
 import login from './Login/login'
 
-const Loading: React.SFC<any> = props => {
+const Loading: React.FC<any> = props => {
   return (
     <Spin tip="불러오는 중...">
       <Alert message="데이터를 불러오고 있어요!" description="가끔 서버가 응답을 하지 않으면... 하아..." type="info" />
@@ -25,6 +25,8 @@ export const LoginResult = createLoadable(() => import('./Login/login_result'))
 export const TestAxios = createLoadable(() => import('./test/naverSelectiveList'))
 export const Home = createLoadable(() => import('./Home/home'))
 export const Survey = createLoadable(() => import('./Survey/survey'))
+export const SurveyPage = createLoadable(() => import('./Survey/survey_list'))
+export const SurveyLoading = createLoadable(() => import('./Survey/survey_loading'))
 export const Ranking = createLoadable(() => import('./Ranking'))
 export const RankingSearch = createLoadable(() => import('./Ranking/ranking_search'))
 export const SearchResult = createLoadable(() => import('./Search/search_result'))
@@ -36,6 +38,8 @@ export const StockSearch = createLoadable(() => import('./Stock/stock_search'))
 export const ProductDetail = createLoadable(() => import('./Product/product_detail'))
 export const RankingProductList = createLoadable(() => import('./Ranking/ranking_product_list'))
 export const ProductCompareList = createLoadable(() => import('./Product/product_compare'))
+
+export const WorkReportManage = createLoadable(() => import('./Manage/work_report'))
 
 export const PageNotFound = createLoadable(() => import('./Error/PageNotFound'))
 
@@ -52,8 +56,13 @@ const Routes = () => {
         <Route path="/app/example" component={Example} />
         <Route path="/app/test/axios" component={TestAxios} />
         <Route path="/app/home" component={Home} />
+
         <Route path="/app/login" component={Login} />
         <Route path="/app/loginresult" component={LoginResult} />
+
+        <Route path="/app/survey/page/:page" component={SurveyPage} />
+        <Route path="/app/survey/loading" component={SurveyLoading} />
+
         <Route path="/app/survey" component={Survey} />
         <Route path="/app/ranking/products" component={RankingProductList} />
         <Route path="/app/ranking/search/:searchType/:brandName" component={RankingSearch} />
@@ -71,6 +80,7 @@ const Routes = () => {
         <Route path="/app/product/detail/:goodsCode" component={ProductDetail} />
         <Route path="/app/product/compare/list" component={ProductCompareList} />
 
+        <Route path="/app/manage/work/report" component={WorkReportManage} />
         <Route component={PageNotFound} />
       </Switch>
     </>

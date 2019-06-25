@@ -2,6 +2,7 @@ package kr.co.oliveyoung.shopapp.services.api.product;
 
 import kr.co.oliveyoung.shopapp.common.enums.ResponseResult;
 import kr.co.oliveyoung.shopapp.common.model.ApiResponseMessage;
+import kr.co.oliveyoung.shopapp.common.utils.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -13,6 +14,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,10 +25,11 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class ProductDetailParserController {
 
+    @Cacheable(value = "getProductPidFromBarcode", key = "#key")
     @GetMapping("/product/barcode/{barcode}")
-    public ApiResponseMessage getProductPidFromBarcode(HttpServletResponse response, @PathVariable("barcode") String barcode) {
-        String barcodeUrl = "https://m.oliveyoung.co.kr/m/goods/getGoodsDetailBarcode.do?itemNo=" + barcode;
-        String barcodeHtml = requestUrl(barcodeUrl);
+    public ApiResponseMessage getProductPidFromBarcode(HttpServletResponse response, @PathVariable("barcode") String key) {
+        String barcodeUrl = "https://m.oliveyoung.co.kr/m/goods/getGoodsDetailBarcode.do?itemNo=" + key;
+        String barcodeHtml = HttpUtils.requestMobileUrl(barcodeUrl);
         Document document = Jsoup.parse(barcodeHtml);
         String goodsCode = null;
         try {
@@ -40,33 +43,34 @@ public class ProductDetailParserController {
         return parseProductDetail(response, goodsCode);
     }
 
+    @Cacheable(value = "parseProductDetail", key = "#key")
     @GetMapping("/product/detail/parser/{goodsCode}")
-    public ApiResponseMessage parseProductDetail(HttpServletResponse response, @PathVariable("goodsCode") String goodsCode) {
-        String productUrl = "https://m.oliveyoung.co.kr/m/goods/getGoodsDetail.do?goodsNo=" + goodsCode;
-        String productDetailUrl = "https://m.oliveyoung.co.kr/m/goods/getGoodsDesc.do?goodsNo=" + goodsCode;
-        String goodsInfoUrl = "https://m.oliveyoung.co.kr/m/goods/getGoodsArtcAjax.do?goodsNo=" + goodsCode;
-        String reviewUrl = "https://m.oliveyoung.co.kr/m/goods/getGdasSummaryAjax.do?goodsNo=" + goodsCode;
+    public ApiResponseMessage parseProductDetail(HttpServletResponse response, @PathVariable("goodsCode") String key) {
+        String productUrl = "https://m.oliveyoung.co.kr/m/goods/getGoodsDetail.do?goodsNo=" + key;
+        String productDetailUrl = "https://m.oliveyoung.co.kr/m/goods/getGoodsDesc.do?goodsNo=" + key;
+        String goodsInfoUrl = "https://m.oliveyoung.co.kr/m/goods/getGoodsArtcAjax.do?goodsNo=" + key;
+        String reviewUrl = "https://m.oliveyoung.co.kr/m/goods/getGdasSummaryAjax.do?goodsNo=" + key;
 
-        if (goodsCode == null) {
+        if (key == null) {
             response.setStatus(400);
             return new ApiResponseMessage(ResponseResult.FAIL, "상품번호가 없습니다.", null);
         }
 
         ProductDetailInfo result = new ProductDetailInfo();
-        result.setGoodsCode(goodsCode);
+        result.setGoodsCode(key);
         Document document = null;
         try {
-            String html = requestUrl(productUrl);
+            String html = HttpUtils.requestMobileUrl(productUrl);
             document = Jsoup.parse(html);
             // create result info
             setProductElementInfos(result, document);
             transformProductPage(document);
             // append product detail
-            String productDetailHtml = requestUrl(productDetailUrl);
+            String productDetailHtml = HttpUtils.requestMobileUrl(productDetailUrl);
             Elements tabCont = document.body().getElementsByClass("line_tab_cont");
             tabCont.get(0).children().get(0).before(productDetailHtml);
             // append goods info
-            String goodsInfoHtml = requestUrl(goodsInfoUrl);
+            String goodsInfoHtml = HttpUtils.requestMobileUrl(goodsInfoUrl);
             tabCont.get(1).children().get(0).before(goodsInfoHtml);
             document.body().getElementsByClass("listBuyInfo").get(0).remove();
             try {
@@ -81,7 +85,7 @@ public class ProductDetailParserController {
                 }
             } catch (Exception e) {}
             // append review
-            String reviewHtml = requestUrl(reviewUrl);
+            String reviewHtml = HttpUtils.requestMobileUrl(reviewUrl);
             Document reviewDocument = Jsoup.parse(reviewHtml);
             removeUnusedReviewElements(reviewDocument);
             document.body().getElementById("gdasWrap").append(reviewDocument.outerHtml());
@@ -104,7 +108,7 @@ public class ProductDetailParserController {
 //            message = new ApiResponseMessage(ResponseResult.FAIL, "상품 상세가 존재하지 않습니다.", null);
             response.setStatus(204);
         } else {
-            message = new ApiResponseMessage(ResponseResult.SUCCESS, null, null);
+            message = new ApiResponseMessage(ResponseResult.SUCCESS, key);
             message.setContents(result);
         }
         return message;
@@ -181,39 +185,6 @@ public class ProductDetailParserController {
         } catch (Exception e) {
             log.error("탭 메뉴 조작 중 에러", e);
         }
-    }
-
-    private void setMobileHeader(GetMethod method) {
-        method.setRequestHeader("User-Agent", "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Mobile Safari/537.36");
-        method.setRequestHeader("Host", "m.oliveyoung.co.kr");
-        method.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
-    }
-
-    private String requestUrl(String url) {
-        try {
-            HttpClientParams httpParams = new HttpClientParams();
-            httpParams.setConnectionManagerClass(SimpleHttpConnectionManager.class);
-            HttpClient client = new HttpClient(httpParams);
-            GetMethod method = null;
-            try {
-                method = new GetMethod(url);
-                setMobileHeader(method);
-                int code = client.executeMethod(method);
-                String response = IOUtils.toString(method.getResponseBodyAsStream(), "UTF-8");
-                if (code != 200) {
-                    throw new Exception("unexcepted result: " + code + " " + response);
-                }
-                return response;
-            } catch (Exception e) {
-            } finally {
-                if (method != null) {
-                    method.releaseConnection();
-                }
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return null;
     }
 
     private String style = "<style>\n" +
