@@ -2,12 +2,12 @@ import { SearchForm } from 'common/types/entities/search'
 import { LoginForm } from 'common/types/entities/login'
 
 export interface LoginConditionParamsState {
-  //searchForm: SearchForm
-  searchForm: LoginForm
+  //loginForm: SearchForm
+  loginForm: LoginForm
 }
 
 const initialState: LoginConditionParamsState = {
-  searchForm: {
+  loginForm: {
     id: '',
     pw: '',
   },

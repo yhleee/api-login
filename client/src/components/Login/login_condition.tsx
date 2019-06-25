@@ -26,56 +26,37 @@ interface OwnProps {
   history?: History
 }
 
-interface OwnState {}
 interface StateProps {
   loginConditionParams: LoginConditionParamsState
 }
 interface DispatchProps {
-  //resetLoginConditionParams: typeof resetLoginConditionParams
+  resetLoginConditionParams: typeof resetLoginConditionParams
   updateLoginConditionParams: typeof updateLoginConditionParams
 }
+interface OwnState {}
 
-// type Props = OwnProps & StateProps & DispatchProps
+type Props = OwnProps & StateProps & DispatchProps
 
-type Props = OwnProps & StateProps
-
-class SearchCondition extends React.Component<Props, OwnState> {
+class loginCondition extends React.Component<Props, OwnState> {
   constructor(props) {
     super(props)
-    this.state = {
-      brandList: [],
-    }
   }
 
   async componentDidMount() {
-    this.props.loginConditionParams.searchForm.id = ''
-    this.props.loginConditionParams.searchForm.pw = ''
-    // this.props.searchConditionParams.searchForm.categoryId = ''
-    // this.props.searchConditionParams.searchForm.benefit = ''
-    // this.props.searchConditionParams.searchForm.brand = ''
-    // this.props.searchConditionParams.searchForm.startValue = 0
-    // this.props.searchConditionParams.searchForm.endValue = 200000
-
-    //const brandList = await getSearchBrandList('00')
-
-    //this.setState({ ...this.state, brandList: this.state.brandList.concat(brandList) })
+    this.props.loginConditionParams.loginForm.id = ''
+    this.props.loginConditionParams.loginForm.pw = ''
   }
-
-  // onPriceRangeChange = ([startVal, endVal]) => {
-  //   this.props.searchConditionParams.searchForm.endValue = endVal
-  //   this.props.searchConditionParams.searchForm.startValue = startVal
-  // }
 
   onChangeID = e => {
-    this.props.loginConditionParams.searchForm.id = e.target.value
+    this.props.loginConditionParams.loginForm.id = e.target.value
   }
   onChangePW = e => {
-    this.props.loginConditionParams.searchForm.pw = e.target.value
+    this.props.loginConditionParams.loginForm.pw = e.target.value
   }
 
   goResultPage = () => {
-    //const searchConditionParams = this.props.searchConditionParams
-    //this.props.updateSearchConditionParams(searchConditionParams)
+    const loginConditionParams = this.props.loginConditionParams
+    this.props.updateLoginConditionParams(loginConditionParams)
     this.props.history.push('/app/loginresult')
     // window.location.href = '/app/loginresult';
   }
@@ -101,7 +82,7 @@ class SearchCondition extends React.Component<Props, OwnState> {
           />
         </div>
         <div>
-          {/* 검색어 입력 영역 */}
+          {/* PW 입력 */}
           <Input
             type="password"
             placeholder="Olive One Password"
@@ -129,7 +110,7 @@ export default connect<StateProps, DispatchProps, OwnProps>(
     loginConditionParams: state.loginConditionParams,
   }),
   {
-    //resetSearchConditionParams,
+    resetLoginConditionParams,
     updateLoginConditionParams,
   },
-)(styling(s)(SearchCondition))
+)(styling(s)(loginCondition))

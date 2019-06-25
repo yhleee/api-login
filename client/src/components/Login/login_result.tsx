@@ -7,6 +7,8 @@ import { styling } from 'common/utils'
 import * as s from './login.scss'
 import { match } from 'react-router'
 import { LoginConditionParamsState } from './ducks/loginConditionParams'
+import { Link } from 'react-router-dom'
+import { getAuthentication } from 'common/services/login'
 
 interface OwnProps {
   cx?: DynamicCx
@@ -38,7 +40,15 @@ class SearchResult extends React.Component<Props, OwnState> {
   render() {
     const { cx } = this.props
 
-    return <div>로그인 하는중입니다 User ID : User PW :</div>
+    return (
+      <div>
+        <div>로그인 하는중입니다</div>
+        <div>ID {this.props.loginConditionParams.loginForm.id}</div>
+        <div>PW {this.props.loginConditionParams.loginForm.pw}</div>
+
+        {/*<Link className={cx()} to={`/app/login/check/${this.props.loginConditionParams.loginForm.id}`}/>*/}
+      </div>
+    )
   }
 }
 
